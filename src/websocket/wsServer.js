@@ -61,8 +61,7 @@ function initWebSocketServer(server) {
     });
   });
 
-  console.log(`🔌 WebSocket Server running on port ${port}`);
-  console.log(`📱 Mobile devices can connect to: ws://localhost:${port}`);
+  console.log(`🔌 WebSocket Server initialized and running on same port as HTTP server`);
 }
 
 /**
