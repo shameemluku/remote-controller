@@ -6,9 +6,10 @@ const connectedClients = new Map();
 
 /**
  * Initialize WebSocket Server
+ * @param {http.Server} server - The HTTP server instance to attach WebSocket to
  */
-function initWebSocketServer(port) {
-  wss = new WebSocket.Server({ port });
+function initWebSocketServer(server) {
+  wss = new WebSocket.Server({ server });
 
   wss.on('connection', (ws, req) => {
     const deviceId = uuidv4();

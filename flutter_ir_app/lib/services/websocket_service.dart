@@ -9,8 +9,8 @@ class WebSocketService extends ChangeNotifier {
   WebSocketChannel? _channel;
   bool _isConnected = false;
   String? _deviceId;
-  // Use localhost for web, 10.0.2.2 for Android emulator
-  String _serverUrl = kIsWeb ? 'ws://localhost:8080' : 'ws://10.0.2.2:8080';
+  // Use Render.com URL (secure WebSocket)
+  String _serverUrl = 'wss://remote-controller-ve79.onrender.com';
   final Logger _logger = Logger();
   
   // Stream controller to broadcast commands

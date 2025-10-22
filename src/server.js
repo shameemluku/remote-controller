@@ -7,7 +7,6 @@ const { initWebSocketServer } = require('./websocket/wsServer');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const WS_PORT = process.env.WS_PORT || 8080;
 
 // Middleware
 app.use(cors());
@@ -22,12 +21,12 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'IR Blast API is running' });
 });
 
-// Start HTTP Server
+// Start HTTP Server and WebSocket Server on the same port
 // Bind to 0.0.0.0 for Render.com compatibility
-app.listen(PORT, '0.0.0.0', () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 HTTP Server running on port ${PORT}`);
   console.log(`📡 Test at: http://localhost:${PORT}/health`);
 });
 
-// Start WebSocket Server
-initWebSocketServer(WS_PORT);
+// Start WebSocket Server using the same HTTP server
+initWebSocketServer(server);
