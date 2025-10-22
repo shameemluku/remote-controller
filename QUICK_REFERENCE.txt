@@ -1,0 +1,166 @@
+╔══════════════════════════════════════════════════════════════════╗
+║                    IR BLAST - QUICK REFERENCE                     ║
+╚══════════════════════════════════════════════════════════════════╝
+
+📦 PROJECT STRUCTURE
+════════════════════════════════════════════════════════════════════
+IR Blast/
+├── 🟢 Node.js Backend (RUNNING on ports 3000 & 8080)
+│   └── Start: cd "IR Blast" && npm start
+│
+└── 📱 Flutter Mobile App
+    └── Run: cd "flutter_ir_app" && flutter run
+
+🚀 QUICK START (3 STEPS)
+════════════════════════════════════════════════════════════════════
+1. Backend is already running ✅
+   
+2. Install Flutter (if not installed):
+   → Download: https://docs.flutter.dev/get-started/install/windows
+   → Extract to C:\flutter
+   → Add C:\flutter\bin to PATH
+   → Run: flutter doctor
+
+3. Run Flutter app:
+   cd "c:\Users\lenovo\Desktop\IR Blast\flutter_ir_app"
+   .\setup.ps1   (automated)
+   OR
+   flutter pub get && flutter run   (manual)
+
+📡 CONNECTION SETTINGS
+════════════════════════════════════════════════════════════════════
+Android Emulator:     ws://10.0.2.2:8080
+Physical Device:      ws://YOUR_COMPUTER_IP:8080
+API Server:           http://localhost:3000
+WebSocket Server:     ws://localhost:8080
+
+🧪 TEST WITH POSTMAN
+════════════════════════════════════════════════════════════════════
+Import: postman_collection.json
+
+┌─────────────────────────────────────────────────────────────────┐
+│ POST http://localhost:3000/api/ac/temperature                   │
+│ Body: {"temperature": 24}                                       │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│ POST http://localhost:3000/api/ac/power                         │
+│ Body: {"power": true}                                           │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│ POST http://localhost:3000/api/ac/mode                          │
+│ Body: {"mode": "cool"}                                          │
+└─────────────────────────────────────────────────────────────────┘
+
+🔄 DATA FLOW
+════════════════════════════════════════════════════════════════════
+Postman → Node.js API → WebSocket → Flutter → IR Signal → AC
+         (HTTP)        (Real-time)  (Native)  (38kHz)
+
+📚 DOCUMENTATION
+════════════════════════════════════════════════════════════════════
+/PROJECT_OVERVIEW.md          → Complete system overview
+/README.md                    → Backend documentation
+/QUICK_START.md               → Backend quick start
+/flutter_ir_app/INSTALLATION.md   → Flutter setup guide
+/flutter_ir_app/TESTING_GUIDE.md  → Complete testing workflow
+/flutter_ir_app/SUMMARY.md        → Flutter app overview
+
+⚡ FLUTTER COMMANDS
+════════════════════════════════════════════════════════════════════
+flutter pub get           Install dependencies
+flutter run              Run app (debug mode)
+flutter devices          List connected devices
+flutter emulators        List/launch emulators
+flutter doctor           Check installation
+flutter clean            Clean build
+
+While app is running:
+  r  → Hot reload (instant UI updates)
+  R  → Hot restart (full restart)
+  q  → Quit app
+
+🔧 TROUBLESHOOTING
+════════════════════════════════════════════════════════════════════
+Backend won't start:
+  → Check ports 3000/8080 not in use
+  → Run: npm install
+
+Flutter not found:
+  → Add C:\flutter\bin to PATH
+  → Restart terminal
+
+No devices:
+  → Start emulator from Android Studio
+  → OR: flutter emulators --launch <id>
+
+WebSocket won't connect:
+  → Ensure backend is running
+  → Use ws://10.0.2.2:8080 for emulator
+  → Check firewall settings
+
+📱 EMULATOR vs PHYSICAL DEVICE
+════════════════════════════════════════════════════════════════════
+┌─────────────────────┬────────────┬────────────┐
+│ Feature             │ Emulator   │ Physical   │
+├─────────────────────┼────────────┼────────────┤
+│ WebSocket           │     ✅     │     ✅     │
+│ UI Testing          │     ✅     │     ✅     │
+│ IR Transmission     │     ❌     │     ✅     │
+│ Server URL          │ 10.0.2.2   │ Your IP    │
+│ USB Debugging       │     -      │  Required  │
+└─────────────────────┴────────────┴────────────┘
+
+⚠️  IMPORTANT NOTES
+════════════════════════════════════════════════════════════════════
+• IR patterns in code are EXAMPLES - capture your AC's real codes
+• Emulator can't transmit IR (no hardware)
+• Use IR learning app to capture codes
+• Physical device needed for actual AC control
+• Keep backend server running while testing
+
+🎯 TESTING CHECKLIST
+════════════════════════════════════════════════════════════════════
+□ Backend server running (npm start)
+□ Flutter dependencies installed (flutter pub get)
+□ Emulator/device running
+□ Flutter app launched
+□ WebSocket connected (green status)
+□ Device ID assigned
+□ Postman command sent
+□ Command received in app
+□ UI updated
+□ Activity logs show message
+
+✨ SUCCESS INDICATORS
+════════════════════════════════════════════════════════════════════
+Backend Terminal:
+  🚀 HTTP Server running on port 3000
+  🔌 WebSocket Server running on port 8080
+  📱 New device connected: <device-id>
+  📤 Command sent to device
+  ✅ Command executed successfully
+
+Flutter App:
+  Status: 🟢 Connected
+  Device ID: abc-123-xyz
+  Toast: "Set Temperature: 24°C - Success"
+  Activity logs show messages
+
+Postman:
+  {
+    "success": true,
+    "message": "Temperature set to 24°C"
+  }
+
+🚀 YOU'RE READY TO GO!
+════════════════════════════════════════════════════════════════════
+Next step: Install Flutter and run the app!
+
+cd "c:\Users\lenovo\Desktop\IR Blast\flutter_ir_app"
+.\setup.ps1
+
+═══════════════════════════════════════════════════════════════════
+                        Happy Coding! 🎉
+═══════════════════════════════════════════════════════════════════

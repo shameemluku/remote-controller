@@ -1,0 +1,175 @@
+{
+  "info": {
+    "name": "IR Blast AC Control API",
+    "description": "API endpoints for controlling AC via mobile IR blaster",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/health",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "Set Temperature to 24°C",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"temperature\": 24\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/ac/temperature",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "ac", "temperature"]
+        }
+      }
+    },
+    {
+      "name": "Set Temperature to 18°C",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"temperature\": 18\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/ac/temperature",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "ac", "temperature"]
+        }
+      }
+    },
+    {
+      "name": "Turn AC ON",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"power\": true\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/ac/power",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "ac", "power"]
+        }
+      }
+    },
+    {
+      "name": "Turn AC OFF",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"power\": false\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/ac/power",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "ac", "power"]
+        }
+      }
+    },
+    {
+      "name": "Set Mode to Cool",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mode\": \"cool\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/ac/mode",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "ac", "mode"]
+        }
+      }
+    },
+    {
+      "name": "Set Mode to Heat",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mode\": \"heat\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/ac/mode",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "ac", "mode"]
+        }
+      }
+    },
+    {
+      "name": "List Connected Devices",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/ac/devices",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "ac", "devices"]
+        }
+      }
+    }
+  ]
+}

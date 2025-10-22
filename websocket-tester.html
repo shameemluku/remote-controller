@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IR Blast WebSocket Tester</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .connected {
+            background: #d4edda;
+            color: #155724;
+        }
+        .disconnected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #007bff;
+            background: white;
+        }
+        .error {
+            border-left-color: #dc3545;
+        }
+        .success {
+            border-left-color: #28a745;
+        }
+        input[type="text"], input[type="number"] {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 200px;
+        }
+        .control-group {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔌 IR Blast WebSocket Tester</h1>
+        <p>This page simulates a mobile device connecting to the IR Blast server via WebSocket.</p>
+        
+        <div id="status" class="status disconnected">
+            Status: Disconnected
+        </div>
+
+        <div class="control-group">
+            <h3>Connection</h3>
+            <input type="text" id="serverUrl" value="ws://localhost:8080" placeholder="WebSocket URL">
+            <button id="connectBtn" onclick="connect()">Connect</button>
+            <button id="disconnectBtn" onclick="disconnect()" disabled>Disconnect</button>
+        </div>
+
+        <div class="control-group">
+            <h3>Simulate Mobile Responses</h3>
+            <button onclick="sendResponse('COMMAND_EXECUTED', true)">Send Success Response</button>
+            <button onclick="sendResponse('COMMAND_FAILED', false)">Send Failure Response</button>
+        </div>
+
+        <div class="control-group">
+            <h3>Device Info</h3>
+            <div id="deviceInfo">Not connected</div>
+        </div>
+
+        <div class="log">
+            <h3>Activity Log</h3>
+            <div id="logContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        let ws = null;
+        let deviceId = null;
+
+        function log(message, type = 'info') {
+            const logContainer = document.getElementById('logContainer');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logContainer.insertBefore(entry, logContainer.firstChild);
+        }
+
+        function updateStatus(connected, message) {
+            const statusEl = document.getElementById('status');
+            statusEl.className = `status ${connected ? 'connected' : 'disconnected'}`;
+            statusEl.textContent = `Status: ${message}`;
+            
+            document.getElementById('connectBtn').disabled = connected;
+            document.getElementById('disconnectBtn').disabled = !connected;
+        }
+
+        function connect() {
+            const serverUrl = document.getElementById('serverUrl').value;
+            log(`Connecting to ${serverUrl}...`);
+
+            try {
+                ws = new WebSocket(serverUrl);
+
+                ws.onopen = function() {
+                    log('✅ Connected to server!', 'success');
+                    updateStatus(true, 'Connected');
+                };
+
+                ws.onmessage = function(event) {
+                    const data = JSON.parse(event.data);
+                    log(`📩 Received: ${JSON.stringify(data, null, 2)}`);
+
+                    if (data.type === 'CONNECTION_SUCCESS') {
+                        deviceId = data.deviceId;
+                        document.getElementById('deviceInfo').innerHTML = `
+                            <strong>Device ID:</strong> ${deviceId}<br>
+                            <strong>Message:</strong> ${data.message}
+                        `;
+                        log(`Device ID assigned: ${deviceId}`, 'success');
+                    } else if (data.type === 'SET_TEMPERATURE') {
+                        log(`🌡️ Temperature command: ${data.temperature}°C`, 'success');
+                        simulateIRTransmission('temperature', data.temperature);
+                    } else if (data.type === 'SET_POWER') {
+                        log(`⚡ Power command: ${data.power ? 'ON' : 'OFF'}`, 'success');
+                        simulateIRTransmission('power', data.power);
+                    } else if (data.type === 'SET_MODE') {
+                        log(`🔧 Mode command: ${data.mode}`, 'success');
+                        simulateIRTransmission('mode', data.mode);
+                    }
+                };
+
+                ws.onerror = function(error) {
+                    log(`❌ WebSocket error: ${error.message}`, 'error');
+                };
+
+                ws.onclose = function() {
+                    log('Disconnected from server');
+                    updateStatus(false, 'Disconnected');
+                    deviceId = null;
+                    document.getElementById('deviceInfo').textContent = 'Not connected';
+                };
+
+            } catch (error) {
+                log(`❌ Connection failed: ${error.message}`, 'error');
+            }
+        }
+
+        function disconnect() {
+            if (ws) {
+                ws.close();
+                ws = null;
+            }
+        }
+
+        function simulateIRTransmission(type, value) {
+            log(`📡 Simulating IR transmission for ${type}: ${value}...`);
+            
+            // Simulate IR transmission delay
+            setTimeout(() => {
+                log(`✅ IR signal transmitted successfully!`, 'success');
+                sendResponse('COMMAND_EXECUTED', true);
+            }, 500);
+        }
+
+        function sendResponse(type, success) {
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                log('❌ Not connected to server', 'error');
+                return;
+            }
+
+            const response = {
+                type: type,
+                success: success,
+                timestamp: new Date().toISOString()
+            };
+
+            if (!success) {
+                response.error = 'Simulated error';
+            }
+
+            ws.send(JSON.stringify(response));
+            log(`📤 Sent response: ${JSON.stringify(response)}`, 'success');
+        }
+
+        // Auto-connect on page load
+        window.addEventListener('load', function() {
+            log('WebSocket tester loaded. Click Connect to start.');
+        });
+    </script>
+</body>
+</html>
